@@ -1,7 +1,5 @@
 <img src="./public/logo.svg" alt="Logo" width="150" height="150" />
 
-<!-- ![Logo](./public/logo.svg) -->
-
 # Job Trackr
 
 > Easily organize and keep track of your job application process.
