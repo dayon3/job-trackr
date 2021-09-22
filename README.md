@@ -1,4 +1,4 @@
-<img src="./public/logo.svg" alt="Logo" width="150" height="150" />
+<img src="./public/logo white text.svg" alt="Logo" width="150" height="150" />
 
 # Job Trackr
 
