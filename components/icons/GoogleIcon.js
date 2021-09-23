@@ -2,7 +2,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 const GoogleIcon = (props) => {
   return (
-    <SvgIcon {...props} style={{ width: '1rem', height: '1rem' }}>
+    <SvgIcon {...props}>
       <path
         d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z"
         fill="#4285f4"

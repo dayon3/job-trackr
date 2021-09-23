@@ -60,7 +60,7 @@ const Home = () => {
         {auth.user ? (
           <Button
             variant="contained"
-            color="status"
+            color="primary"
             onClick={(e) => auth.signout()}
           >
             Sign Out
