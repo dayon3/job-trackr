@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Head from 'next/head';
+import Link from 'next/link';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -58,13 +59,22 @@ const Home = () => {
         </p>
 
         {auth.user ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(e) => auth.signout()}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 2, md: 4 }}
           >
-            Sign Out
-          </Button>
+            <Button variant="outlined" color="primary" href="/job-tracking">
+              Dashboard
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(e) => auth.signout()}
+            >
+              Sign Out
+            </Button>
+          </Stack>
         ) : (
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
