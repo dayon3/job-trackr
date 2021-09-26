@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -20,6 +21,7 @@ import { LocationIcon } from './icons/LocationIcon';
 import { LinkIcon } from './icons/LinkIcon';
 import { SalaryIcon } from './icons/SalaryIcon';
 import { JobTitleIcon } from './icons/JobTitleIcon';
+import { createJob } from '@/lib/db';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -92,6 +94,7 @@ BootstrapDialogTitle.propTypes = {
 const AddJobModal = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const { handleSubmit, register, errors } = useForm();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -100,8 +103,10 @@ const AddJobModal = () => {
     setOpen(false);
   };
 
+  const onCreateJob = (values) => createJob(values);
+
   return (
-    <div>
+    <>
       <Button
         variant="text"
         color="inherit"
@@ -129,16 +134,20 @@ const AddJobModal = () => {
         aria-labelledby="customized-dialog-title"
         open={open}
       >
-        <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={handleClose}
-        />
-        <DialogContent
-          dividers
-          sx={{ borderTop: 'none', pt: 4 }}
-          className="modal-content"
+        <form
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit(onCreateJob)}
         >
-          <form noValidate autoComplete="off">
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          />
+          <DialogContent
+            dividers
+            sx={{ borderTop: 'none', pt: 4 }}
+            className="modal-content"
+          >
             <Grid container>
               <Grid item xs={12}>
                 <FormControl className={`${classes.margin}`}>
@@ -147,8 +156,10 @@ const AddJobModal = () => {
                     id="input-with-icon-adornment"
                     type="text"
                     placeholder="Your Company LLC"
+                    autoFocus
                     className={classes.input}
-                    // value={job?.content}
+                    // value={job?.company}
+                    {...register('company', { required: true })}
                   />
                 </FormControl>
               </Grid>
@@ -163,6 +174,7 @@ const AddJobModal = () => {
                     placeholder="Web Developer"
                     className={classes.input}
                     // value={job?.title}
+                    {...register('title', { required: true })}
                     endAdornment={
                       <InputAdornment position="end" className="mb-1">
                         <JobTitleIcon />
@@ -182,6 +194,7 @@ const AddJobModal = () => {
                     placeholder="$40,000"
                     className={classes.input}
                     // value={job?.salary}
+                    {...register('salary', { required: true })}
                     endAdornment={
                       <InputAdornment position="end" className="mb-1">
                         <SalaryIcon />
@@ -200,6 +213,7 @@ const AddJobModal = () => {
                     type="text"
                     placeholder="job.com/web-developer"
                     className={classes.input}
+                    {...register('link', { required: true })}
                     endAdornment={
                       <InputAdornment position="end" className="mb-1">
                         <LinkIcon />
@@ -219,6 +233,7 @@ const AddJobModal = () => {
                     placeholder="20th Ave, San Francisco"
                     className={classes.input}
                     // value={job?.location}
+                    {...register('location', { required: true })}
                     endAdornment={
                       <InputAdornment position="end" className="mb-1">
                         <LocationIcon />
@@ -238,6 +253,7 @@ const AddJobModal = () => {
                     placeholder="Had an interview September 3rd. Waiting for feedback."
                     className={classes.input}
                     sx={{ py: 2, pb: 5 }}
+                    {...register('description', { required: true })}
                     endAdornment={
                       <InputAdornment position="end">
                         <DescriptionIcon />
@@ -247,15 +263,15 @@ const AddJobModal = () => {
                 </FormControl>
               </Grid>
             </Grid>
-          </form>
-        </DialogContent>
-        <DialogActions sx={{ p: 2, px: 4, backgroundColor: '#e6ebf4' }}>
-          <Button variant="contained" autoFocus onClick={handleClose}>
-            Save
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions sx={{ p: 2, px: 4, backgroundColor: '#e6ebf4' }}>
+            <Button variant="contained" autoFocus type="submit">
+              Save
+            </Button>
+          </DialogActions>
+        </form>
       </BootstrapDialog>
-    </div>
+    </>
   );
 };
 
