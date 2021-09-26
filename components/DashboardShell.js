@@ -10,7 +10,7 @@ import AccountMenu from './AccountMenu';
 
 export default function DashboardShell(props) {
   const { children, ...customMeta } = props;
-  const auth = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const meta = {
     title: 'Job Trackr – Dashboard.',
@@ -74,8 +74,8 @@ export default function DashboardShell(props) {
               mr="1rem"
             />
             <div className={styles.account}>
-              <a className={styles.link}>{`${auth.user.name}`.split(' ')[0]}</a>
-              <AccountMenu alt={auth.user.name} src={auth.user.photoUrl} />
+              <a className={styles.link}>{`${user.name}`.split(' ')[0]}</a>
+              <AccountMenu alt={user.name} src={user.photoUrl} />
             </div>
           </div>
         </nav>

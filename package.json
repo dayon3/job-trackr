@@ -1,5 +1,5 @@
 {
-  "name": "nextjs",
+  "name": "job-trackr",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,16 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dayon3/job-trackr.git"
+  },
+  "author": "dayon3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dayon3/job-trackr/issues"
+  },
+  "homepage": "https://github.com/dayon3/job-trackr#readme",
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
@@ -17,7 +27,8 @@
     "next": "11.1.2",
     "react": "17.0.2",
     "react-beautiful-dnd": "^13.1.0",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.16.0"
   },
   "devDependencies": {
     "eslint": "7.32.0",
