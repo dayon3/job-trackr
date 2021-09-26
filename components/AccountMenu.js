@@ -6,6 +6,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+
 import { useAuth } from '@/lib/auth';
 import { SettingsIcon } from './icons/SettingsIcon';
 import { LogoutIcon } from './icons/LogoutIcon';
