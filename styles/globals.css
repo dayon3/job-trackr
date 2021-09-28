@@ -20,22 +20,21 @@ body {
 }
 
 /* custom scrollbar */
-body,
+.column,
 .modal-content {
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
-body::-webkit-scrollbar {
-  width: 12px;
+.column::-webkit-scrollbar {
+  width: 4px;
 }
 .modal-content::-webkit-scrollbar {
   width: 9px;
 }
-body::-webkit-scrollbar-track,
 .modal-content::-webkit-scrollbar-track {
   background: var(--scrollbarBG);
 }
-body::-webkit-scrollbar-thumb,
+.column::-webkit-scrollbar-thumb,
 .modal-content::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG);
   border-radius: 6px;
@@ -49,4 +48,8 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.column:last-of-type {
+  margin-right: 0;
 }

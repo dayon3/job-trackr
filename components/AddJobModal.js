@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { mutate } from 'swr';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -15,6 +16,9 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputBase from '@mui/material/InputBase';
 import InputLabel from '@mui/material/InputLabel';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 import { DescriptionIcon } from './icons/DescriptionIcon';
 import { LocationIcon } from './icons/LocationIcon';
@@ -22,6 +26,7 @@ import { LinkIcon } from './icons/LinkIcon';
 import { SalaryIcon } from './icons/SalaryIcon';
 import { JobTitleIcon } from './icons/JobTitleIcon';
 import { createJob } from '@/lib/db';
+import { useAuth } from '@/lib/auth';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -91,9 +96,15 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired
 };
 
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const AddJobModal = () => {
   const classes = useStyles();
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
   const { handleSubmit, register, errors } = useForm();
 
   const handleClickOpen = () => {
@@ -102,8 +113,44 @@ const AddJobModal = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleToastClose = (reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
-  const onCreateJob = (values) => createJob(values);
+    setOpenToast(false);
+  };
+
+  const onCreateJob = ({
+    company,
+    description,
+    link,
+    location,
+    salary,
+    title
+  }) => {
+    const newJob = {
+      authorId: user.uid,
+      createdAt: new Date().toISOString(),
+      company,
+      description,
+      link,
+      location,
+      salary,
+      title
+    };
+
+    createJob(newJob);
+    setOpenToast(true);
+    mutate(
+      '/api/jobs',
+      async (data) => {
+        return { jobs: [...data.jobs, newJob] };
+      },
+      false
+    );
+    setOpen(false);
+  };
 
   return (
     <>
@@ -271,6 +318,21 @@ const AddJobModal = () => {
           </DialogActions>
         </form>
       </BootstrapDialog>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={openToast}
+        autoHideDuration={5000}
+        onClose={handleToastClose}
+      >
+        <Alert
+          onClose={handleToastClose}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          <AlertTitle>Success!</AlertTitle>
+          We&apos;ve added your job.
+        </Alert>
+      </Snackbar>
     </>
   );
 };

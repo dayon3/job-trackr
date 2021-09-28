@@ -1,20 +1,20 @@
-// import { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import useSWR from 'swr';
 
-import { useAuth } from '@/lib/auth';
-import styles from '@/styles/JobTracking.module.css';
-import DashboardShell from '@/components/DashboardShell';
-import AppliedIcon from '@/components/icons/AppliedIcon';
 import { InterviewIcon } from '@/components/icons/InterviewIcon';
 import { OfferIcon } from '@/components/icons/OfferIcon';
 import { RejectedIcon } from '@/components/icons/RejectedIcon';
 import { WishlistIcon } from '@/components/icons/WishlistIcon';
-import AddJobModal from '@/components/AddJobModal';
-// import initialData from '../initial-data';
+import AppliedIcon from '@/components/icons/AppliedIcon';
+import Column from '@/components/Column';
+import DashboardShell from '@/components/DashboardShell';
+import DashboardSkeleton from '@/components/DashboardSkeleton';
+import fetcher from 'utils/fetcher';
+import { useAuth } from '@/lib/auth';
 
 const JobTracking = () => {
-  // const [state, setState] = useState(initialData);
   const auth = useAuth();
+  const { data } = useSWR('/api/jobs', fetcher);
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -93,40 +93,18 @@ const JobTracking = () => {
     rejected: <RejectedIcon />
   };
 
-  if (!auth.user) {
-    return 'Loading...';
+  if (!data) {
+    return (
+      <DashboardShell>
+        <DashboardSkeleton />
+      </DashboardShell>
+    );
   }
 
   return (
     <DashboardShell>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className={styles.container}>
-          <section className={styles.cta}>
-            <h2 className="">Job Tracking</h2>
-            {/* TODO: add button modal with how to use instructions */}
-            <button className={styles.btn}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M10 19a9 9 0 100-18 9 9 0 000 18zm1.3-13a1.2 1.2 0 11-2.5 0 1.2 1.2 0 012.5 0zm-.3 9V9H9v6h2z"
-                ></path>
-              </svg>
-              <span className={styles.span}>How to use?</span>
-            </button>
-          </section>
-
-          <section className={styles.wrapper}>
-            <AddJobModal />
-          </section>
-        </div>
+        <Column jobs={data.jobs} />
       </DragDropContext>
     </DashboardShell>
   );
