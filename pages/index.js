@@ -9,14 +9,30 @@ import { useAuth } from '@/lib/auth';
 import styles from '@/styles/Home.module.css';
 import GitHubIcon from '@/components/icons/GitHubIcon';
 import GoogleIcon from '@/components/icons/GoogleIcon';
+import AnonymousIcon from '@/components/icons/AnonymousIcon';
 
 const GitHubButton = styled(Button)(() => ({
   color: '#fff',
   backgroundColor: '#171923',
   boxShadow: 'none',
   fontWeight: 'bold',
+  textTransform: 'none',
   '&:hover': {
     backgroundColor: '#2d3748',
+    boxShadow: 'none'
+  }
+}));
+
+const AnonButton = styled(Button)(() => ({
+  color: '#2d3748',
+  backgroundColor: '#fff',
+  borderColor: '#e2e8f0',
+  boxShadow: 'none',
+  fontWeight: 'bold',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#f2f5fa',
+    borderColor: '#e2e8f0',
     boxShadow: 'none'
   }
 }));
@@ -26,6 +42,7 @@ const GoogleButton = styled(Button)(() => ({
   backgroundColor: '#fff',
   borderColor: '#e2e8f0',
   fontWeight: 'bold',
+  textTransform: 'none',
   '&:hover': {
     backgroundColor: '#f2f5fa',
     borderColor: '#e2e8f0'
@@ -81,30 +98,27 @@ const Home = () => {
             spacing={{ xs: 1, sm: 2, md: 4 }}
           >
             <GitHubButton
-              onClick={(e) => auth.signinWithGitHub()}
+              onClick={(e) => auth.signinWithGitHub('/job-tracking')}
               size="large"
               variant="contained"
-              sx={{
-                textTransform: 'none'
-              }}
               startIcon={
                 <GitHubIcon
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="2"
+                  sx={{ height: '20px' }}
                 />
               }
             >
               Continue With GitHub
             </GitHubButton>
             <GoogleButton
-              onClick={(e) => auth.signinWithGitHub()}
+              onClick={(e) => auth.signinWithGoogle('/job-tracking')}
               size="large"
               variant="outlined"
-              sx={{
-                textTransform: 'none'
-              }}
-              startIcon={<GoogleIcon viewBox="0 0 533.5 544.3" />}
+              startIcon={
+                <GoogleIcon viewBox="0 0 533.5 544.3" sx={{ height: '20px' }} />
+              }
             >
               Continue With Google
             </GoogleButton>

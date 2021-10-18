@@ -1,18 +1,25 @@
+import { useState } from 'react';
+import { Droppable } from 'react-beautiful-dnd';
+import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import AddJobModal from './AddJobModal';
 
 import styles from '@/styles/Column.module.css';
+import JobModal from './JobModal';
 import Job from './Job';
+import AddIcon from './icons/AddIcon';
 
-const Column = ({ jobs }) => {
+const Column = ({ jobs, column, icon, allCols }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Stack
       direction="column"
       sx={{
         position: 'relative',
-        width: '20rem',
+        width: '288px',
         borderRadius: '0.125rem',
-        marginRight: '2rem'
+        marginRight: '2rem',
+        marginBottom: '2.5rem'
       }}
       className="column"
     >
@@ -22,36 +29,89 @@ const Column = ({ jobs }) => {
         justifyContent="space-between"
         sx={{ marginBottom: '14px' }}
       >
-        <h3 className={styles.heading}>Wishlist</h3>
-        <span className={styles.number}>{jobs.length}</span>
-      </Stack>
-      <Stack
-        direction="column"
-        sx={{
-          padding: '0',
-          position: 'relative',
-          maxHeight: '100%',
-          marginRight: '2rem',
-          width: '20rem',
-          borderRadius: '0.125rem'
-        }}
-      >
-        <AddJobModal />
-        <Stack
-          sx={{
-            width: 'calc(100% + 8px)',
-            position: 'relative',
-            overflowY: 'auto',
-            flexGrow: '1',
-            paddingTop: '8px'
-          }}
-          className="column"
-        >
-          {jobs.map((job) => (
-            <Job job={job} key={job.id} />
-          ))}
+        <Stack direction="row" alignItems="center">
+          {icon}
+          <span className={styles.heading}>{column.title}</span>
         </Stack>
+        <span className={styles.number}>{jobs?.length}</span>
       </Stack>
+      <Droppable droppableId={column.title}>
+        {(provided, snapshot) => (
+          <Stack
+            direction="column"
+            sx={{
+              position: 'relative',
+              maxHeight: '100%',
+              marginRight: '2rem',
+              width: '288px',
+              borderRadius: '0.375rem',
+              backgroundColor: '#f2f5fa',
+              '::before': {
+                content: '""',
+                position: 'absolute',
+                inset: '-6px -6px -6px',
+                backgroundColor: 'rgb(230, 235, 244)',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                opacity: `${snapshot.isDraggingOver ? 1 : 0}`,
+                transition: 'opacity 0.2s ease 0s'
+              }
+            }}
+          >
+            <Button
+              variant="text"
+              sx={{
+                textTransform: 'none',
+                color: '#98a1b3',
+                backgroundColor: '#e6ebf4',
+                borderRadius: '0.375rem',
+                ':hover': {
+                  backgroundColor: '#dde3f0'
+                }
+              }}
+              onClick={() => setOpen(true)}
+            >
+              <AddIcon fill="#98a1b3" />
+              Add Job
+            </Button>
+            <JobModal
+              allCols={allCols}
+              column={column}
+              open={open}
+              close={() => setOpen(false)}
+            />
+            <Stack
+              sx={{
+                width: 'calc(100% + 8px)',
+                position: 'relative',
+                overflowY: 'auto',
+                height: '70vh',
+                flexGrow: '1',
+                paddingTop: '8px'
+              }}
+              className="column"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {jobs.map((job, index) => {
+                if (typeof job === 'undefined') {
+                  return;
+                }
+                return (
+                  <Job
+                    job={job}
+                    key={index}
+                    index={index}
+                    columnDetails={column}
+                    allCols={allCols}
+                  />
+                );
+              })}
+              {provided.placeholder}
+            </Stack>
+          </Stack>
+        )}
+      </Droppable>
     </Stack>
   );
 };

@@ -5,14 +5,14 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
 import Tooltip from '@mui/material/Tooltip';
 
 import { useAuth } from '@/lib/auth';
-import { SettingsIcon } from './icons/SettingsIcon';
 import { LogoutIcon } from './icons/LogoutIcon';
 
-export default function AccountMenu({ alt, src }) {
-  const { signout } = useAuth();
+const AccountMenu = ({ alt, src }) => {
+  const { user, signout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -23,7 +23,7 @@ export default function AccountMenu({ alt, src }) {
   };
   return (
     <>
-      <Tooltip title="Account settings">
+      <Tooltip title="Account details">
         <IconButton onClick={handleClick} size="small">
           <Avatar alt={alt} src={src} sx={{ width: 40, height: 40 }} />
         </IconButton>
@@ -52,15 +52,14 @@ export default function AccountMenu({ alt, src }) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Avatar src={src} /> My account
+          {!src ? (
+            <Skeleton variant="circular" width={40} height={40} />
+          ) : (
+            <Avatar src={src} />
+          )}{' '}
+          {user.name}
         </MenuItem>
         <Divider />
-        <MenuItem>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={() => signout()}>
           <ListItemIcon>
             <LogoutIcon />
@@ -70,4 +69,6 @@ export default function AccountMenu({ alt, src }) {
       </Menu>
     </>
   );
-}
+};
+
+export default AccountMenu;

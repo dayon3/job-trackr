@@ -1,6 +1,6 @@
 import SvgIcon from '@mui/material/SvgIcon';
 
-export const SettingsIcon = () => {
+const SettingsIcon = () => {
   return (
     <SvgIcon
       xmlns="http://www.w3.org/2000/svg"
@@ -14,3 +14,5 @@ export const SettingsIcon = () => {
     </SvgIcon>
   );
 };
+
+export default SettingsIcon;

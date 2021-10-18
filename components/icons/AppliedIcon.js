@@ -1,9 +1,6 @@
-import SvgIcon from '@mui/material/SvgIcon';
-
-const AppliedIcon = (props) => {
+export const AppliedIcon = () => {
   return (
-    <SvgIcon
-      {...props}
+    <svg
       width="20"
       height="20"
       viewBox="0 0 20 20"
@@ -16,8 +13,6 @@ const AppliedIcon = (props) => {
         clipRule="evenodd"
         d="M10 17a7 7 0 100-14 7 7 0 000 14zm0 2a9 9 0 100-18 9 9 0 000 18z"
       ></path>
-    </SvgIcon>
+    </svg>
   );
 };
-
-export default AppliedIcon;
