@@ -1,0 +1,61 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 2rem;
+  margin: 0 auto;
+  backdrop-filter: blur(8px);
+  background-color: #fff;
+  height: 64px;
+}
+
+.skipNav {
+  position: absolute;
+  padding: 0.5rem 1rem;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+  transform: translateY(-3rem);
+  left: 25%;
+  top: -2rem;
+}
+
+.skipNav:focus {
+  top: 1rem;
+  transform: translateY(-0.75rem);
+}
+
+.links,
+.account {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  padding: 0.5rem;
+  color: rgba(17, 24, 39, 1);
+}
+
+.link:hover,
+.username:hover {
+  color: #2196f3;
+}
+
+.divider,
+.username {
+  margin-right: 0.5rem !important;
+}
+
+@media (min-width: 640px) {
+  .link {
+    padding: 1rem;
+  }
+  .nav {
+    height: 80px;
+  }
+  .divider,
+  .username {
+    margin-right: 1rem !important;
+  }
+}

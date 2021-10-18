@@ -1,14 +1,11 @@
 .heading {
   margin: 0;
   margin-left: 0.5rem;
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+  line-height: 20px;
   font-weight: 500;
-  color: rgba(55, 65, 81, 1);
 }
 
 .number {
-  /* rounded-full w-5 h-5 text-center flex items-center justify-center text-xs font-bold" */
   background-color: #dde3f0;
   border-radius: 999px;
   width: 1.25rem;

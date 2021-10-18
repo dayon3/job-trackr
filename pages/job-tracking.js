@@ -1,20 +1,22 @@
 import { DragDropContext } from 'react-beautiful-dnd';
-import useSWR from 'swr';
+import { useState, useEffect } from 'react';
 
-import { InterviewIcon } from '@/components/icons/InterviewIcon';
-import { OfferIcon } from '@/components/icons/OfferIcon';
-import { RejectedIcon } from '@/components/icons/RejectedIcon';
-import { WishlistIcon } from '@/components/icons/WishlistIcon';
-import AppliedIcon from '@/components/icons/AppliedIcon';
 import Column from '@/components/Column';
 import DashboardShell from '@/components/DashboardShell';
 import DashboardSkeleton from '@/components/DashboardSkeleton';
-import fetcher from 'utils/fetcher';
+import useTrackerData from '@/hooks/useTrackerData';
 import { useAuth } from '@/lib/auth';
+import { db, doc, updateDoc, serverTimestamp } from '@/lib/firebase';
+import COLUMN_ICONS from '@/utils/icons';
 
-const JobTracking = () => {
-  const auth = useAuth();
-  const { data } = useSWR('/api/jobs', fetcher);
+export default function JobTracking() {
+  const { user } = useAuth();
+  const userId = user?.uid;
+  const { initialData, setInitialData } = useTrackerData(userId);
+  const [windowReady, setWindowReady] = useState(false);
+  useEffect(() => {
+    setWindowReady(true);
+  }, []);
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -32,33 +34,36 @@ const JobTracking = () => {
       return;
     }
 
-    // reorder the task id array
-    const start = state.columns[source.droppableId];
-    const finish = state.columns[destination.droppableId];
+    // reorder the job id array
+    const start = initialData.columns[source.droppableId];
+    const finish = initialData.columns[destination.droppableId];
 
     if (start === finish) {
-      const newJobIds = Array.from(start.jobIds);
+      const newJobIds = Array.from(finish.jobIds);
+
       newJobIds.splice(source.index, 1);
       newJobIds.splice(destination.index, 0, draggableId);
 
       const newColumn = {
-        ...start,
+        ...finish,
         jobIds: newJobIds
       };
 
       const newState = {
-        ...state,
+        ...initialData,
         columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn
+          ...initialData.columns,
+          [finish.id]: newColumn
         }
       };
 
-      setState(newState);
+      setInitialData(newState);
+      const docRef = doc(db, `users/${userId}/columns`, start.id);
+      updateDoc(docRef, { jobIds: newJobIds }).then(() => {});
       return;
     }
 
-    // moving from one list to another
+    // moving from one column to another
     const startJobIds = Array.from(start.jobIds);
     startJobIds.splice(source.index, 1);
     const newStart = {
@@ -74,40 +79,54 @@ const JobTracking = () => {
     };
 
     const newState = {
-      ...state,
+      ...initialData,
       columns: {
-        ...state.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
+        ...initialData.columns,
+        [start.id]: newStart,
+        [finish.id]: newFinish
       }
     };
+    setInitialData(newState);
 
-    setState(newState);
+    const startDocRef = doc(db, `users/${userId}/columns`, newStart.id);
+    updateDoc(startDocRef, { jobIds: startJobIds }).then(() => {});
+
+    const finishDocRef = doc(db, `users/${userId}/columns`, newFinish.id);
+    updateDoc(finishDocRef, { jobIds: finishJobIds }).then(() => {});
+
+    const finishJobRef = doc(db, `users/${userId}/jobs`, draggableId);
+    updateDoc(finishJobRef, { dateAdded: serverTimestamp() }).then(() => {});
   };
 
-  const COLUMN_ICONS = {
-    wishlist: <WishlistIcon />,
-    applied: <AppliedIcon />,
-    interview: <InterviewIcon />,
-    offer: <OfferIcon />,
-    rejected: <RejectedIcon />
-  };
-
-  if (!data) {
+  if (!initialData) {
     return (
-      <DashboardShell>
+      <DashboardShell cta>
         <DashboardSkeleton />
       </DashboardShell>
     );
   }
 
   return (
-    <DashboardShell>
+    <DashboardShell cta>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Column jobs={data.jobs} />
+        {initialData?.columnOrder?.map((col, index) => {
+          const column = initialData?.columns[col];
+          const jobs = column.jobIds?.map((job) => initialData?.jobs[job]);
+          const icon = COLUMN_ICONS[Object.keys(COLUMN_ICONS)[index]];
+
+          if (windowReady) {
+            return (
+              <Column
+                key={index}
+                jobs={jobs}
+                column={column}
+                icon={icon}
+                allCols={initialData.columnOrder}
+              />
+            );
+          }
+        })}
       </DragDropContext>
     </DashboardShell>
   );
-};
-
-export default JobTracking;
+}
