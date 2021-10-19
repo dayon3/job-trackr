@@ -116,41 +116,46 @@ const Job = ({ job, index, columnDetails, allCols }) => {
               alignItems="flex-start"
               sx={{ width: '100%', mt: '0.5rem' }}
             >
-              <Tooltip
-                title={`In this column since ${formatDate(
-                  job?.dateAdded?.toDate(),
-                  'd MMM, kk:mm'
-                )}`}
-                placement="top-start"
-                arrow
-                classes={classes}
-              >
-                <span className={styles.tag}>
-                  {distanceToNow(job?.dateAdded?.toDate())}
-                </span>
-              </Tooltip>
+              {job.dateAdded && (
+                <Tooltip
+                  title={`In this column since ${formatDate(
+                    job?.dateAdded?.toDate(),
+                    'd MMM, kk:mm'
+                  )}`}
+                  placement="top-start"
+                  arrow
+                  classes={classes}
+                >
+                  <span className={styles.tag}>
+                    {distanceToNow(job?.dateAdded?.toDate())}
+                  </span>
+                </Tooltip>
+              )}
               {job.tag && <span className={styles.tag}>Demo</span>}
-              <Tooltip
-                title={job.location}
-                placement="top"
-                arrow
-                classes={classes}
-              >
-                <div className={styles.space}>
-                  <LocationIcon />
-                </div>
-              </Tooltip>
-              <Tooltip
-                // title={`$ ${new Number(props.job.salary).toLocaleString()}`}
-                title={job.salary}
-                placement="top"
-                arrow
-                classes={classes}
-              >
-                <div>
-                  <SalaryIcon />
-                </div>
-              </Tooltip>
+              {job.location && (
+                <Tooltip
+                  title={job.location}
+                  placement="top"
+                  arrow
+                  classes={classes}
+                >
+                  <div className={styles.space}>
+                    <LocationIcon />
+                  </div>
+                </Tooltip>
+              )}
+              {job.salary && (
+                <Tooltip
+                  title={job.salary}
+                  placement="top"
+                  arrow
+                  classes={classes}
+                >
+                  <div>
+                    <SalaryIcon />
+                  </div>
+                </Tooltip>
+              )}
             </Stack>
           </Stack>
         )}
