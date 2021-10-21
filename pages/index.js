@@ -78,7 +78,11 @@ const Home = () => {
               Dashboard
             </Button>
 
-            <Button variant="contained" color="primary" onClick={signout}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => signout()}
+            >
               Sign Out
             </Button>
           </Stack>
@@ -88,7 +92,7 @@ const Home = () => {
             spacing={{ xs: 1, sm: 2, md: 4 }}
           >
             <GitHubButton
-              onClick={signinWithGitHub('/job-tracking')}
+              onClick={() => signinWithGitHub('/job-tracking')}
               size="large"
               variant="contained"
               startIcon={
@@ -103,7 +107,7 @@ const Home = () => {
               Continue With GitHub
             </GitHubButton>
             <GoogleButton
-              onClick={signinWithGoogle('/job-tracking')}
+              onClick={() => signinWithGoogle('/job-tracking')}
               size="large"
               variant="outlined"
               startIcon={
