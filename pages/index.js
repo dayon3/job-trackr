@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Head from 'next/head';
-import Link from 'next/link';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -9,7 +8,6 @@ import { useAuth } from '@/lib/auth';
 import styles from '@/styles/Home.module.css';
 import GitHubIcon from '@/components/icons/GitHubIcon';
 import GoogleIcon from '@/components/icons/GoogleIcon';
-import AnonymousIcon from '@/components/icons/AnonymousIcon';
 
 const GitHubButton = styled(Button)(() => ({
   color: '#fff',
@@ -19,20 +17,6 @@ const GitHubButton = styled(Button)(() => ({
   textTransform: 'none',
   '&:hover': {
     backgroundColor: '#2d3748',
-    boxShadow: 'none'
-  }
-}));
-
-const AnonButton = styled(Button)(() => ({
-  color: '#2d3748',
-  backgroundColor: '#fff',
-  borderColor: '#e2e8f0',
-  boxShadow: 'none',
-  fontWeight: 'bold',
-  textTransform: 'none',
-  '&:hover': {
-    backgroundColor: '#f2f5fa',
-    borderColor: '#e2e8f0',
     boxShadow: 'none'
   }
 }));
@@ -50,7 +34,7 @@ const GoogleButton = styled(Button)(() => ({
 }));
 
 const Home = () => {
-  const auth = useAuth();
+  const { user, signinWithGitHub, signinWithGoogle, signout } = useAuth();
 
   return (
     <div className={styles.container}>
@@ -61,6 +45,15 @@ const Home = () => {
           content="Easiest way to organize and keep track of your job
           application process."
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (document.cookie && document.cookie.includes('job-trackr-auth')) {
+                window.location.href = "/job-tracking"
+              }
+            `
+          }}
+        />
       </Head>
       <main className={styles.main}>
         <Image
@@ -68,6 +61,7 @@ const Home = () => {
           alt="Job trackr logo"
           width={110}
           height={110}
+          priority
         />
         <p className={styles.description}>
           <b>Job Trackr</b> is the easiest way to organize and keep track of
@@ -75,7 +69,7 @@ const Home = () => {
           you can try it out by logging in.
         </p>
 
-        {auth.user ? (
+        {user ? (
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -84,11 +78,7 @@ const Home = () => {
               Dashboard
             </Button>
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(e) => auth.signout()}
-            >
+            <Button variant="contained" color="primary" onClick={signout}>
               Sign Out
             </Button>
           </Stack>
@@ -98,7 +88,7 @@ const Home = () => {
             spacing={{ xs: 1, sm: 2, md: 4 }}
           >
             <GitHubButton
-              onClick={(e) => auth.signinWithGitHub('/job-tracking')}
+              onClick={signinWithGitHub('/job-tracking')}
               size="large"
               variant="contained"
               startIcon={
@@ -106,18 +96,21 @@ const Home = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="2"
-                  sx={{ height: '20px' }}
+                  sx={{ height: '1.25rem' }}
                 />
               }
             >
               Continue With GitHub
             </GitHubButton>
             <GoogleButton
-              onClick={(e) => auth.signinWithGoogle('/job-tracking')}
+              onClick={signinWithGoogle('/job-tracking')}
               size="large"
               variant="outlined"
               startIcon={
-                <GoogleIcon viewBox="0 0 533.5 544.3" sx={{ height: '20px' }} />
+                <GoogleIcon
+                  viewBox="0 0 533.5 544.3"
+                  sx={{ height: '1.25rem' }}
+                />
               }
             >
               Continue With Google
@@ -125,12 +118,6 @@ const Home = () => {
           </Stack>
         )}
       </main>
-      {/* TODO:
-      <img
-        src="/images/footer-illustration.svg"
-        alt=""
-        className={styles.image}
-      /> */}
     </div>
   );
 };

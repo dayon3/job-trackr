@@ -93,7 +93,7 @@ export default function DashboardShell(props) {
               </section>
             </>
           ) : (
-            <section className="">{children}</section>
+            <section>{children}</section>
           )}
         </main>
       </Box>

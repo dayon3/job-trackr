@@ -3,11 +3,11 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   margin: 0 auto;
   backdrop-filter: blur(8px);
   background-color: #fff;
-  height: 64px;
+  height: 4rem;
 }
 
 .skipNav {
@@ -42,8 +42,11 @@
   color: #2196f3;
 }
 
-.divider,
 .username {
+  display: none;
+}
+
+.divider {
   margin-right: 0.5rem !important;
 }
 
@@ -52,7 +55,11 @@
     padding: 1rem;
   }
   .nav {
-    height: 80px;
+    height: 5rem;
+    padding: 0.5rem 2rem;
+  }
+  .username {
+    display: block;
   }
   .divider,
   .username {

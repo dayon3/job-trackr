@@ -3,10 +3,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 
 const BootstrapDialogTitle = (props) => {
-  const { onClose, ...other } = props;
+  const { onClose, children, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 0 }} {...other}>
+    <DialogTitle {...other}>
       {onClose ? (
         <IconButton
           aria-label="close"
@@ -33,6 +33,7 @@ const BootstrapDialogTitle = (props) => {
           </svg>
         </IconButton>
       ) : null}
+      {children}
     </DialogTitle>
   );
 };

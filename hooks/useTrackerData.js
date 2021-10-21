@@ -11,8 +11,8 @@ const useTrackerData = (userId) => {
     const q = query(collection(db, `users/${userId}/jobs`));
     const unsub = onSnapshot(q, (querySnapshot) => {
       if (querySnapshot.empty) {
-        console.log('No matching documents.');
         return;
+        // console.log('No matching documents.');
       }
       const documents = [];
       querySnapshot.forEach((doc) => {
@@ -29,8 +29,8 @@ const useTrackerData = (userId) => {
     const q = query(collection(db, `users/${userId}/columns`));
     const unsub = onSnapshot(q, (querySnapshot) => {
       if (querySnapshot.empty) {
-        console.log('No matching documents.');
         return;
+        // console.log('No matching documents.');
       }
       const documents = [];
       querySnapshot.forEach((doc) => {

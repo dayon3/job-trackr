@@ -6,8 +6,7 @@ export const JobTitleIcon = () => {
       viewBox="0 0 24 24"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      // className={`text-gray-300 hover:text-gray-400`}
+      fill="#98a1b3"
     >
       <path
         fillRule="evenodd"

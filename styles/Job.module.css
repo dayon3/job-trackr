@@ -10,6 +10,10 @@
   transition: background-color, color 1s ease-out;
 }
 
+.tagColor {
+  background-color: #fff;
+}
+
 .tag:hover {
   background-color: #e6ebf4;
   color: #7a8599;

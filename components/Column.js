@@ -16,7 +16,7 @@ const Column = ({ jobs, column, icon, allCols }) => {
       direction="column"
       sx={{
         position: 'relative',
-        width: '288px',
+        width: { xs: '80vw', sm: '18rem' },
         borderRadius: '0.125rem',
         marginRight: '2rem',
         marginBottom: '2.5rem'
@@ -27,7 +27,7 @@ const Column = ({ jobs, column, icon, allCols }) => {
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ marginBottom: '14px' }}
+        sx={{ marginBottom: '0.875rem' }}
       >
         <Stack direction="row" alignItems="center">
           {icon}
@@ -43,15 +43,15 @@ const Column = ({ jobs, column, icon, allCols }) => {
               position: 'relative',
               maxHeight: '100%',
               marginRight: '2rem',
-              width: '288px',
+              width: { xs: '80vw', sm: '18rem' },
               borderRadius: '0.375rem',
               backgroundColor: '#f2f5fa',
               '::before': {
                 content: '""',
                 position: 'absolute',
-                inset: '-6px -6px -6px',
+                inset: '-0.375rem -0.375rem -0.375rem',
                 backgroundColor: 'rgb(230, 235, 244)',
-                borderRadius: '8px',
+                borderRadius: '0.5rem',
                 pointerEvents: 'none',
                 opacity: `${snapshot.isDraggingOver ? 1 : 0}`,
                 transition: 'opacity 0.2s ease 0s'
@@ -82,31 +82,34 @@ const Column = ({ jobs, column, icon, allCols }) => {
             />
             <Stack
               sx={{
-                width: 'calc(100% + 8px)',
+                width: 'calc(100% + 0.5rem)',
                 position: 'relative',
                 overflowY: 'auto',
                 height: '70vh',
                 flexGrow: '1',
-                paddingTop: '8px'
+                paddingTop: '0.5rem'
               }}
               className="column"
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {jobs.map((job, index) => {
-                if (typeof job === 'undefined') {
-                  return;
-                }
-                return (
-                  <Job
-                    job={job}
-                    key={index}
-                    index={index}
-                    columnDetails={column}
-                    allCols={allCols}
-                  />
-                );
-              })}
+              {jobs
+                .slice()
+                .reverse()
+                .map((job, index) => {
+                  if (typeof job === 'undefined') {
+                    return;
+                  }
+                  return (
+                    <Job
+                      job={job}
+                      key={index}
+                      index={index}
+                      columnDetails={column}
+                      allCols={allCols}
+                    />
+                  );
+                })}
               {provided.placeholder}
             </Stack>
           </Stack>
