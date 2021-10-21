@@ -1,16 +1,21 @@
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useState, useEffect } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
+import { useAuth } from '@/lib/auth';
+import { db, doc, updateDoc, serverTimestamp } from '@/lib/firebase';
+import useNavigatorOnLine from '@/hooks/useNavigatorOnLine';
+import useTrackerData from '@/hooks/useTrackerData';
+import COLUMN_ICONS from '@/utils/icons';
 import Column from '@/components/Column';
 import DashboardShell from '@/components/DashboardShell';
 import DashboardSkeleton from '@/components/DashboardSkeleton';
-import useTrackerData from '@/hooks/useTrackerData';
-import { useAuth } from '@/lib/auth';
-import { db, doc, updateDoc, serverTimestamp } from '@/lib/firebase';
-import COLUMN_ICONS from '@/utils/icons';
+import Toast from '@/components/Toast';
 
 export default function JobTracking() {
   const { user } = useAuth();
+  const isOnline = useNavigatorOnLine();
   const userId = user?.uid;
   const { initialData, setInitialData } = useTrackerData(userId);
   const [windowReady, setWindowReady] = useState(false);
@@ -98,7 +103,23 @@ export default function JobTracking() {
     updateDoc(finishJobRef, { dateAdded: serverTimestamp() }).then(() => {});
   };
 
-  if (!initialData) {
+  if (!user) {
+    return (
+      <Box
+        sx={{
+          height: '100vh',
+          color: 'grey.500',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </Box>
+    );
+  }
+
+  if (!initialData && user) {
     return (
       <DashboardShell cta>
         <DashboardSkeleton />
@@ -107,26 +128,47 @@ export default function JobTracking() {
   }
 
   return (
-    <DashboardShell cta>
-      <DragDropContext onDragEnd={onDragEnd}>
-        {initialData?.columnOrder?.map((col, index) => {
-          const column = initialData?.columns[col];
-          const jobs = column.jobIds?.map((job) => initialData?.jobs[job]);
-          const icon = COLUMN_ICONS[Object.keys(COLUMN_ICONS)[index]];
+    user && (
+      <>
+        <DashboardShell cta>
+          <DragDropContext onDragEnd={onDragEnd}>
+            {initialData?.columnOrder?.map((col, index) => {
+              const column = initialData?.columns[col];
+              const jobs = column.jobIds?.map((job) => initialData?.jobs[job]);
+              const icon = COLUMN_ICONS[Object.keys(COLUMN_ICONS)[index]];
 
-          if (windowReady) {
-            return (
-              <Column
-                key={index}
-                jobs={jobs}
-                column={column}
-                icon={icon}
-                allCols={initialData.columnOrder}
-              />
-            );
-          }
-        })}
-      </DragDropContext>
-    </DashboardShell>
+              if (windowReady) {
+                return (
+                  <Column
+                    key={index}
+                    jobs={jobs}
+                    column={column}
+                    icon={icon}
+                    allCols={initialData.columnOrder}
+                  />
+                );
+              }
+            })}
+          </DragDropContext>
+        </DashboardShell>
+        <Toast
+          open={!isOnline}
+          message="Your connection is lost, some features are unavailable"
+          severity="info"
+          bg="rgb(15, 20, 31)"
+        />
+      </>
+    )
   );
+}
+
+export async function getServerSideProps(context) {
+  const cookie = context.req.cookies['job-trackr-auth'];
+
+  if (!cookie) {
+    return {
+      redirect: { destination: '/', permanent: false }
+    };
+  }
+  return { props: {} };
 }

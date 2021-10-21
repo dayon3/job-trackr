@@ -39,7 +39,14 @@ const JobModal = ({ job, open, close, allCols, column }) => {
           openToast={setOpenToast}
         />
       </BootstrapDialog>
-      <Toast open={openToast} close={handleToastClose} />
+      <Toast
+        open={openToast}
+        close={handleToastClose}
+        message="We've added your job."
+        duration={5000}
+        severity="success"
+        title
+      />
     </>
   );
 };

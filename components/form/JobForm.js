@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import makeStyles from '@mui/styles/makeStyles';
-import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
-import DialogContent from '@mui/material/DialogContent';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogContent from '@mui/material/DialogContent';
 import Grid from '@mui/material/Grid';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -13,18 +16,21 @@ import InputBase from '@mui/material/InputBase';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import { useAuth } from '@/lib/auth';
-import { createJob, updateColJobIds } from '@/lib/db';
-import { serverTimestamp, arrayUnion } from '@/lib/firebase';
+import { createJob, updateColJobIds, updateJob, deleteJob } from '@/lib/db';
+import { serverTimestamp, arrayUnion, arrayRemove } from '@/lib/firebase';
 import { DescriptionIcon } from '@/components/icons/DescriptionIcon';
 import { LocationIcon } from '@/components/icons/LocationIcon';
 import { LinkIcon } from '@/components/icons/LinkIcon';
 import { SalaryIcon } from '@/components/icons/SalaryIcon';
 import { JobTitleIcon } from '@/components/icons/JobTitleIcon';
+import DeleteIcon from '@/components/icons/DeleteIcon';
 import BootstrapDialogTitle from './BootstrapDialogTitle';
 import BootstrapInput from './BootstrapInput';
 import COLUMN_ICONS from '@/utils/icons';
+import usePrevious from '@/hooks/usePrevious';
 
 const useStyles = makeStyles(() => ({
   margin: {
@@ -48,7 +54,9 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
   const { user } = useAuth();
   const userId = user?.uid;
   const [stage, setStage] = useState(column?.title);
-
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  // TODO: add form error handling
   const { handleSubmit, register, errors } = useForm({
     defaultValues: {
       company: job ? job.company : '',
@@ -60,14 +68,17 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
     }
   });
 
-  const onCreateJob = async ({
-    company,
-    description,
-    link,
-    location,
-    salary,
-    title
-  }) => {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onCreateJob = async (data) => {
+    setLoading(true);
+    const { company, description, link, location, salary, title } = data;
     const uuid = uuidv4();
 
     const newJob = {
@@ -82,14 +93,50 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
 
     await createJob(userId, uuid, newJob);
     await updateColJobIds(userId, stage, { jobIds: arrayUnion(uuid) });
-    openToast(true);
+    setLoading(false);
     close();
+    openToast(true);
+  };
+
+  const prevStage = usePrevious(stage);
+
+  const onUpdateJob = async (data) => {
+    const id = job.id;
+    try {
+      close();
+      await updateJob(userId, id, data);
+      if (prevStage) {
+        await updateColJobIds(userId, prevStage, {
+          jobIds: arrayRemove(id)
+        });
+        // update timestamp
+        await updateJob(userId, id, { dateAdded: serverTimestamp() });
+        await updateColJobIds(userId, stage, { jobIds: arrayUnion(id) });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onDeleteJob = async () => {
+    setOpen(false);
+    close();
+    await updateColJobIds(userId, stage, { jobIds: arrayRemove(job.id) });
+    await deleteJob(userId, job.id);
   };
 
   return (
     <>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit(onCreateJob)}>
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={close} />
+      <form
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit(job ? onUpdateJob : onCreateJob)}
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={close}
+          sx={{ p: 1 }}
+        />
         <DialogContent
           dividers
           sx={{ borderTop: 'none', pt: 4 }}
@@ -98,7 +145,9 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
           <Grid container>
             <Grid item xs={12}>
               <FormControl className={classes.margin}>
-                <InputLabel>Company</InputLabel>
+                <InputLabel htmlFor="input-with-icon-adornment">
+                  Company
+                </InputLabel>
                 <Input
                   id="input-with-icon-adornment"
                   type="text"
@@ -157,7 +206,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
                   type="text"
                   placeholder="job.com/web-developer"
                   className={classes.input}
-                  {...register('link', { required: true })}
+                  {...register('link')}
                   endAdornment={
                     <InputAdornment position="end">
                       <LinkIcon />
@@ -198,7 +247,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
                   sx={{ py: 2, pb: 5, alignItems: 'flex-start' }}
                   multiline
                   maxRows={10}
-                  {...register('description', { required: true })}
+                  {...register('description')}
                   endAdornment={
                     <InputAdornment position="end">
                       <DescriptionIcon />
@@ -209,44 +258,117 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 2, px: 4, backgroundColor: '#e6ebf4' }}>
-          <FormControl
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}
-          >
-            {COLUMN_ICONS[`${stage?.toLowerCase()}`]}
-            <Select
-              value={stage}
-              onChange={(event) => setStage(event.target.value)}
-              name="stage"
-              input={<BootstrapInput />}
-              inputProps={{ 'aria-label': 'stage' }}
-            >
-              {allCols?.map((col) => (
-                <MenuItem key={col} value={col}>
-                  <span>{col}</span>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <DialogActions
+          sx={{
+            p: 2,
+            px: 4,
+            backgroundColor: '#e6ebf4',
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
           <Button
-            variant="contained"
-            autoFocus
-            type="submit"
+            onClick={handleClickOpen}
+            variant="text"
+            startIcon={<DeleteIcon />}
             sx={{
-              backgroundColor: 'rgb(33, 150, 243)',
+              color: '#98a1b3',
+              fontWeight: 'bold',
               textTransform: 'none',
-              ml: '20px',
               '&:hover': {
-                backgroundColor: 'rgb(22, 138, 230)'
+                backgroundColor: 'transparent'
               }
             }}
           >
-            Save
+            Delete
           </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            sx={{ p: 3 }}
+          >
+            <BootstrapDialogTitle
+              sx={{ p: 3, pb: 0, fontWeight: 'bold' }}
+              id="alert-dialog-title"
+              onClose={handleClose}
+            >
+              Delete job
+            </BootstrapDialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this job?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions sx={{ p: 3 }}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={onDeleteJob}
+                sx={{ textTransform: 'none' }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleClose}
+                sx={{
+                  backgroundColor: 'rgb(33, 150, 243)',
+                  boxShadow: 'none',
+                  textTransform: 'none',
+                  ml: '20px',
+                  '&:hover': {
+                    backgroundColor: 'rgb(22, 138, 230)',
+                    boxShadow: 'none'
+                  }
+                }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormControl
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}
+            >
+              {COLUMN_ICONS[`${stage?.toLowerCase()}`]}
+              <Select
+                value={stage}
+                onChange={(event) => setStage(event.target.value)}
+                name="stage"
+                input={<BootstrapInput />}
+                inputProps={{ 'aria-label': 'stage' }}
+              >
+                {allCols?.map((col) => (
+                  <MenuItem key={col} value={col}>
+                    <span>{col}</span>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              variant="contained"
+              sx={{
+                backgroundColor: 'rgb(33, 150, 243)',
+                boxShadow: 'none',
+                textTransform: 'none',
+                ml: '20px',
+                '&:hover': {
+                  backgroundColor: 'rgb(22, 138, 230)',
+                  boxShadow: 'none'
+                }
+              }}
+            >
+              Save
+            </LoadingButton>
+          </Box>
         </DialogActions>
       </form>
     </>

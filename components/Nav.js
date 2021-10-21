@@ -22,6 +22,7 @@ const Nav = () => {
         width={30}
         height={30}
         alt="Job trackr logo"
+        priority
       />
       <div className={styles.links}>
         <NextLink href="/">

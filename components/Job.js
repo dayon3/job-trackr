@@ -85,12 +85,17 @@ const Job = ({ job, index, columnDetails, allCols }) => {
               backgroundColor: `${
                 snapshot.isDragging ? 'rgba(239, 246, 255, 1)' : '#fff'
               }`,
+              boxShadow: `${
+                snapshot.isDragging
+                  ? 'rgba(207, 214, 230, 0.7) 0px 14px 16px -10px, rgba(207, 214, 230, 0.12) 0px 20px 40px -8px'
+                  : ''
+              }`,
               borderRadius: '0.5rem',
               cursor: 'pointer !important',
               padding: '1rem',
-              mr: '4px',
+              mr: '0.25rem',
               mb: '0.5rem',
-              maxWidth: '288px',
+              maxWidth: { xs: '80vw', sm: '18rem' },
               ':focus': {
                 outline: 'none',
                 boxShadow: 'rgb(33 150 243) 0px 0px 0px 1px inset'
@@ -126,12 +131,24 @@ const Job = ({ job, index, columnDetails, allCols }) => {
                   arrow
                   classes={classes}
                 >
-                  <span className={styles.tag}>
+                  <span
+                    className={`${styles.tag} ${
+                      snapshot.isDragging ? styles.tagColor : ''
+                    }`}
+                  >
                     {distanceToNow(job?.dateAdded?.toDate())}
                   </span>
                 </Tooltip>
               )}
-              {job.tag && <span className={styles.tag}>Demo</span>}
+              {job.tag && (
+                <span
+                  className={`${styles.tag} ${
+                    snapshot.isDragging ? styles.tagColor : ''
+                  }`}
+                >
+                  Demo
+                </span>
+              )}
               {job.location && (
                 <Tooltip
                   title={job.location}

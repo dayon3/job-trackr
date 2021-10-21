@@ -7,7 +7,6 @@ export const LocationIcon = () => {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       fill="#98a1b3"
-      // className={`text-gray-300 hover:text-gray-400`}
     >
       <path
         fillRule="evenodd"
