@@ -16,7 +16,7 @@ const Column = ({ jobs, column, icon, allCols }) => {
       direction="column"
       sx={{
         position: 'relative',
-        width: { xs: '80vw', sm: '18rem' },
+        width: { xs: '80vw', md: '18rem' },
         borderRadius: '0.125rem',
         marginRight: '2rem',
         marginBottom: '2.5rem'
@@ -43,7 +43,7 @@ const Column = ({ jobs, column, icon, allCols }) => {
               position: 'relative',
               maxHeight: '100%',
               marginRight: '2rem',
-              width: { xs: '80vw', sm: '18rem' },
+              width: { xs: '80vw', md: '18rem' },
               borderRadius: '0.375rem',
               backgroundColor: '#f2f5fa',
               '::before': {

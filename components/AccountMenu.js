@@ -52,11 +52,11 @@ const AccountMenu = ({ alt, src }) => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          {!src ? (
+          {!user ? (
             <Skeleton variant="circular" width={40} height={40} />
           ) : (
             <Avatar src={src} />
-          )}{' '}
+          )}
           {user.name}
         </MenuItem>
         <Divider />

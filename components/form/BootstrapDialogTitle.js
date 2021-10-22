@@ -7,7 +7,7 @@ const BootstrapDialogTitle = (props) => {
 
   return (
     <DialogTitle {...other}>
-      {onClose ? (
+      {onClose && (
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -15,7 +15,8 @@ const BootstrapDialogTitle = (props) => {
             position: 'absolute',
             right: 8,
             top: 8,
-            color: (theme) => theme.palette.grey[500],
+            backgroundColor: { xs: '#e6ebf4', md: 'transparent' },
+            color: { xs: '#fff', md: 'rgb(184, 190, 204)' },
             '&:hover': {
               color: 'rgb(33, 150, 243)'
             }
@@ -23,8 +24,8 @@ const BootstrapDialogTitle = (props) => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            height="24"
             viewBox="0 0 24 24"
+            height="24"
             width="24"
             fill="currentColor"
           >
@@ -32,7 +33,7 @@ const BootstrapDialogTitle = (props) => {
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
           </svg>
         </IconButton>
-      ) : null}
+      )}
       {children}
     </DialogTitle>
   );

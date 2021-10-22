@@ -36,14 +36,14 @@
 .heading {
   margin: 0;
   font-weight: 400;
-  font-size: 1.75rem;
-  line-height: 1.875rem;
+  font-size: 1.5rem;
+  line-height: 1.625rem;
 }
 
 .cta {
   background-color: #f2f5fa;
   position: relative;
-  padding: 2.75rem 1.25rem 0;
+  padding: 2rem 1.25rem 0;
   width: 100%;
   margin: 0 auto;
   display: flex;

@@ -46,6 +46,11 @@ const useStyles = makeStyles(() => ({
   },
   desc: {
     padding: '0.75rem 0'
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%'
   }
 }));
 
@@ -128,18 +133,15 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
   return (
     <>
       <form
+        className={classes.form}
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(job ? onUpdateJob : onCreateJob)}
       >
-        <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={close}
-          sx={{ p: 1 }}
-        />
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={close} />
         <DialogContent
           dividers
-          sx={{ borderTop: 'none', pt: 4 }}
+          sx={{ borderTop: 'none', mb: 'auto', px: { xs: 1, md: 3 } }}
           className="modal-content"
         >
           <Grid container>
@@ -261,7 +263,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
         <DialogActions
           sx={{
             p: 2,
-            px: 4,
+            px: { xs: 1.5, md: 3 },
             backgroundColor: '#e6ebf4',
             display: 'flex',
             justifyContent: 'space-between'
@@ -359,7 +361,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
                 backgroundColor: 'rgb(33, 150, 243)',
                 boxShadow: 'none',
                 textTransform: 'none',
-                ml: '20px',
+                ml: '1rem',
                 '&:hover': {
                   backgroundColor: 'rgb(22, 138, 230)',
                   boxShadow: 'none'
