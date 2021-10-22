@@ -93,23 +93,20 @@ const Column = ({ jobs, column, icon, allCols }) => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {jobs
-                .slice()
-                .reverse()
-                .map((job, index) => {
-                  if (typeof job === 'undefined') {
-                    return;
-                  }
-                  return (
-                    <Job
-                      job={job}
-                      key={index}
-                      index={index}
-                      columnDetails={column}
-                      allCols={allCols}
-                    />
-                  );
-                })}
+              {jobs.map((job, index) => {
+                if (typeof job === 'undefined') {
+                  return;
+                }
+                return (
+                  <Job
+                    job={job}
+                    key={index}
+                    index={index}
+                    columnDetails={column}
+                    allCols={allCols}
+                  />
+                );
+              })}
               {provided.placeholder}
             </Stack>
           </Stack>
