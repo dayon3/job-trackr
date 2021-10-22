@@ -42,8 +42,7 @@ const Home = () => {
         <title>Job Trackr</title>
         <meta
           name="description"
-          content="Easiest way to organize and keep track of your job
-          application process."
+          content="Job Trackr is the easiest way to keep your job search organized in one place – the new job tracking board."
         />
         <script
           dangerouslySetInnerHTML={{
@@ -64,9 +63,9 @@ const Home = () => {
           priority
         />
         <p className={styles.description}>
-          <b>Job Trackr</b> is the easiest way to organize and keep track of
-          your job application process. It&apos;s still a work-in-progress, but
-          you can try it out by logging in.
+          <b>Job Trackr</b> is the easiest way to keep your job search organized
+          in one place – the new job tracking board. It&apos;s still a
+          work-in-progress, but you can try it out by logging in.
         </p>
 
         {user ? (
