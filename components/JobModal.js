@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Dialog from '@mui/material/Dialog';
 
 import JobForm from '@/components/form/JobForm';
@@ -16,6 +17,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const JobModal = ({ job, open, close, allCols, column }) => {
   const [openToast, setOpenToast] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleToastClose = (reason) => {
     if (reason === 'clickaway') {
@@ -27,6 +30,7 @@ const JobModal = ({ job, open, close, allCols, column }) => {
   return (
     <>
       <BootstrapDialog
+        fullScreen={fullScreen}
         onClose={close}
         aria-labelledby="customized-dialog-title"
         open={open}

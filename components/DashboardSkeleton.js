@@ -34,7 +34,7 @@ const Column = ({ one }) => {
       direction="column"
       sx={{
         position: 'relative',
-        width: { xs: '80vw', sm: '18rem' },
+        width: { xs: '80vw', md: '18rem' },
         borderRadius: '0.125rem',
         marginRight: '2rem'
       }}
@@ -48,7 +48,7 @@ const Column = ({ one }) => {
           position: 'relative',
           maxHeight: '100%',
           marginRight: '2rem',
-          width: { xs: '80vw', sm: '18rem' },
+          width: { xs: '80vw', md: '18rem' },
           borderRadius: '0.125rem'
         }}
       >

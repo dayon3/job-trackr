@@ -95,7 +95,7 @@ const Job = ({ job, index, columnDetails, allCols }) => {
               padding: '1rem',
               mr: '0.25rem',
               mb: '0.5rem',
-              maxWidth: { xs: '80vw', sm: '18rem' },
+              maxWidth: { xs: '80vw', md: '18rem' },
               ':focus': {
                 outline: 'none',
                 boxShadow: 'rgb(33 150 243) 0px 0px 0px 1px inset'
