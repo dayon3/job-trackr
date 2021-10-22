@@ -44,13 +44,13 @@ export default function JobTracking() {
     const finish = initialData.columns[destination.droppableId];
 
     if (start === finish) {
-      const newJobIds = Array.from(finish.jobIds);
+      const newJobIds = Array.from(start.jobIds);
 
       newJobIds.splice(source.index, 1);
       newJobIds.splice(destination.index, 0, draggableId);
 
       const newColumn = {
-        ...finish,
+        ...start,
         jobIds: newJobIds
       };
 
@@ -58,13 +58,13 @@ export default function JobTracking() {
         ...initialData,
         columns: {
           ...initialData.columns,
-          [finish.id]: newColumn
+          [newColumn.id]: newColumn
         }
       };
 
       setInitialData(newState);
       const docRef = doc(db, `users/${userId}/columns`, start.id);
-      updateDoc(docRef, { jobIds: newJobIds }).then(() => {});
+      updateDoc(docRef, { jobIds: newJobIds });
       return;
     }
 
@@ -94,13 +94,13 @@ export default function JobTracking() {
     setInitialData(newState);
 
     const startDocRef = doc(db, `users/${userId}/columns`, newStart.id);
-    updateDoc(startDocRef, { jobIds: startJobIds }).then(() => {});
+    updateDoc(startDocRef, { jobIds: startJobIds });
 
     const finishDocRef = doc(db, `users/${userId}/columns`, newFinish.id);
-    updateDoc(finishDocRef, { jobIds: finishJobIds }).then(() => {});
+    updateDoc(finishDocRef, { jobIds: finishJobIds });
 
     const finishJobRef = doc(db, `users/${userId}/jobs`, draggableId);
-    updateDoc(finishJobRef, { dateAdded: serverTimestamp() }).then(() => {});
+    updateDoc(finishJobRef, { dateAdded: serverTimestamp() });
   };
 
   if (!user) {
