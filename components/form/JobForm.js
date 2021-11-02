@@ -108,7 +108,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
   const onUpdateJob = async (data) => {
     const id = job.id;
     try {
-      close();
+      setLoading(true);
       await updateJob(userId, id, data);
       if (prevStage) {
         await updateColJobIds(userId, prevStage, {
@@ -118,6 +118,8 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
         await updateJob(userId, id, { dateAdded: serverTimestamp() });
         await updateColJobIds(userId, stage, { jobIds: arrayUnion(id) });
       }
+      setLoading(false);
+      close();
     } catch (err) {
       console.error(err);
     }
@@ -368,7 +370,7 @@ const JobForm = ({ close, job, allCols, column, openToast }) => {
                 }
               }}
             >
-              Save
+              {job ? 'Update' : 'Save'}
             </LoadingButton>
           </Box>
         </DialogActions>
