@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import { format as formatDate } from 'date-fns';
+import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import { makeStyles } from '@mui/styles';
-import { format as formatDate } from 'date-fns';
 
 import distanceToNow from '@/utils/dateRelative';
 import styles from '@/styles/Job.module.css';
